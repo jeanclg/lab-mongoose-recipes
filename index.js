@@ -21,7 +21,7 @@ mongoose
   })
   .then(() => {
     // Run your code here, after you have insured that the connection was made
-    const newRecipe = Recipe.create({
+    Recipe.create({
       title: "Asian Glazed Chicken Thighs-2",
       level: "Amateur Chef",
       ingredients: [
@@ -40,9 +40,26 @@ mongoose
         "https://images.media-allrecipes.com/userphotos/720x405/815964.jpg",
       duration: 40,
       creator: "Chef LePapu",
-    });
+    }).then((x) => {
+      console.log("First plate", x);
 
-    console.log(newRecipe);
+      Recipe.insertMany(data).then((x) => {
+        x.map((y) => console.log(y.title));
+
+        Recipe.findOneAndUpdate(
+          { title: "Rigatoni alla Genovese" },
+          { $set: { duration: 100 } }
+        ).then((x) => {
+          console.log(x.duration);
+
+          Recipe.deleteOne({ title: "Carrot Cake" }).then((x) => {
+            console.log("Deletou", x);
+
+            mongoose.connection.close();
+          });
+        });
+      });
+    });
   })
   .catch((error) => {
     console.error("Error connecting to the database", error);
